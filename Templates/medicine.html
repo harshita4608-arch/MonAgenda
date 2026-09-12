@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>MonAgenda - Medicine</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+         MonAgenda 
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('dashboard') }}">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('habits') }}">
+            ✅ Habits
+        </a>
+
+        <a href="{{ url_for('pets') }}">
+            🐾 Pet Coach
+        </a>
+
+        <a href="{{ url_for('timetable') }}">
+            📅 Timetable
+        </a>
+
+        <a href="{{ url_for('medicine') }}">
+            💊 Medicine
+        </a>
+
+        <a href="{{ url_for('skills') }}">
+            🤝 SkillSwap
+        </a>
+
+        <a href="{{ url_for('mood') }}">
+            🧠 Mood
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =========================
+     MAIN CONTAINER
+========================= -->
+
+<div class="dashboard-container">
+
+
+    <!-- =========================
+         PAGE HEADER
+    ========================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="welcome-small">
+                💊 HEALTH REMINDER
+            </p>
+
+            <h1>
+                Medicine Tracker
+            </h1>
+
+            <p>
+                Keep track of your medicines and daily reminders.
+            </p>
+
+        </div>
+
+
+        <div class="header-emoji">
+            💊
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         ADD MEDICINE
+    ========================= -->
+
+    <div class="card add-habit-card">
+
+        <h2>
+            ➕ Add Medicine
+        </h2>
+
+
+        <form
+            action="{{ url_for('add_medicine') }}"
+            method="POST"
+            class="medicine-form"
+        >
+
+
+            <!-- MEDICINE NAME -->
+
+            <input
+                type="text"
+                name="med_name"
+                placeholder="Medicine name"
+                required
+            >
+
+
+            <!-- DOSAGE -->
+
+            <input
+                type="text"
+                name="dosage"
+                placeholder="Dosage e.g. 1 tablet"
+                required
+            >
+
+
+            <!-- REMINDER TIME -->
+
+            <input
+                type="time"
+                name="reminder_time"
+                required
+            >
+
+
+            <!-- ADD BUTTON -->
+
+            <button type="submit">
+                ➕ Add
+            </button>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- =========================
+         MEDICINE LIST
+    ========================= -->
+
+    <h2 class="section-title">
+        💊 Today's Medicines
+    </h2>
+
+
+    <div class="medicine-grid">
+
+
+        {% if medicines %}
+
+
+            {% for med in medicines %}
+
+
+            <!-- =========================
+                 MEDICINE CARD
+            ========================= -->
+
+            <div class="card medicine-card
+                {% if med.taken_today %}
+                    medicine-done
+                {% endif %}
+            ">
+
+
+                <!-- ICON -->
+
+                <div class="medicine-icon">
+
+                    {% if med.taken_today %}
+                        ✅
+                    {% else %}
+                        💊
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- INFORMATION -->
+
+                <div class="medicine-info">
+
+                    <h2>
+                        {{ med.name }}
+                    </h2>
+
+
+                    <p class="medicine-dosage">
+                        💊 {{ med.dosage }}
+                    </p>
+
+
+                    <p class="medicine-time">
+                        ⏰ {{ med.reminder_time }}
+                    </p>
+
+                </div>
+
+
+
+                <!-- STATUS / TAKE -->
+
+                {% if med.taken_today %}
+
+                    <div class="medicine-status">
+
+                        ✓ Taken Today
+
+                    </div>
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for(
+                            'take_medicine',
+                            med_id=med.id
+                        ) }}"
+                        class="medicine-take-btn"
+                    >
+
+                        ✓ Take
+
+                    </a>
+
+                {% endif %}
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        {% else %}
+
+
+            <!-- =========================
+                 EMPTY STATE
+            ========================= -->
+
+            <div class="card empty-medicine">
+
+                <div>
+                    💊
+                </div>
+
+                <h2>
+                    No medicines added yet
+                </h2>
+
+                <p>
+                    Add your medicines above to start
+                    receiving reminders.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+
+    <!-- =========================
+         PET COACH
+    ========================= -->
+
+    <div class="card medicine-coach">
+
+
+        <div class="coach-pet">
+
+    {{ pet_emojis.get(user['pet_type'], '🐼') }}
+
+</div>
+
+        <div>
+
+            <h2>
+                {{ user['pet_name'] }} says 💜
+            </h2>
+
+            <p>
+                Taking care of yourself is important!
+                Remember your medicines according to
+                your prescribed schedule.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         SAFETY NOTE
+    ========================= -->
+
+    <div class="medicine-note">
+
+        ⚠️ <strong>Reminder:</strong>
+
+        MonAgenda only helps you remember medicines.
+        Always follow your doctor's or pharmacist's
+        instructions for what medicine to take and when.
+
+    </div>
+
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

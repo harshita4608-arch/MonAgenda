@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonAgenda - Mood</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+         MonAgenda
+    </div>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+        <a href="{{ url_for('habits') }}">✅ Habits</a>
+        <a href="{{ url_for('pets') }}">🐾 Pet Coach</a>
+        <a href="{{ url_for('timetable') }}">📅 Timetable</a>
+        <a href="{{ url_for('medicine') }}">💊 Medicine</a>
+        <a href="{{ url_for('skills') }}">🤝 SkillSwap</a>
+        <a href="{{ url_for('mood') }}">🧠 Mood</a>
+
+    </div>
+
+</nav>
+
+<div class="dashboard-container">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="welcome-small">
+                MOOD CHECK-IN 🌈
+            </p>
+
+            <h1>
+                How are you feeling today?
+            </h1>
+
+            <p>
+                Your mood helps MonAgenda personalize your experience.
+            </p>
+
+        </div>
+
+        <div class="header-emoji">
+            🧠
+        </div>
+
+    </div>
+
+
+    <!-- CURRENT MOOD -->
+
+    <div class="card">
+
+        <h2>Current Mood</h2>
+
+        {% if latest_mood %}
+
+            <p>
+                Your latest mood:
+                <strong>{{ latest_mood['mood'] }}</strong>
+            </p>
+
+        {% else %}
+
+            <p>
+                No mood selected yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- MOOD SELECTOR -->
+
+    <div class="card">
+
+        <h2>Select Your Mood</h2>
+
+        <form method="POST" class="mood-grid">
+
+            <button type="submit" name="mood" value="Happy">
+                😊 Happy
+            </button>
+
+            <button type="submit" name="mood" value="Calm">
+                😌 Calm
+            </button>
+
+            <button type="submit" name="mood" value="Motivated">
+                🔥 Motivated
+            </button>
+
+            <button type="submit" name="mood" value="Stressed">
+                😰 Stressed
+            </button>
+
+            <button type="submit" name="mood" value="Sad">
+                😔 Sad
+            </button>
+
+            <button type="submit" name="mood" value="Tired">
+                😴 Tired
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

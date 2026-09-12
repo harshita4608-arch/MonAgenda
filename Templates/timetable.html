@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MonAgenda - Timetable</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+         MonAgenda
+    </div>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('dashboard') }}">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('habits') }}">
+            ✅ Habits
+        </a>
+
+        <a href="{{ url_for('pets') }}">
+            🐾 Pet Coach
+        </a>
+
+        <a href="{{ url_for('timetable') }}">
+            📅 Timetable
+        </a>
+
+        <a href="{{ url_for('medicine') }}">
+            💊 Medicine
+        </a>
+
+        <a href="{{ url_for('skills') }}">
+            🤝 SkillSwap
+        </a>
+
+        <a href="{{ url_for('mood') }}">
+            🧠 Mood
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     MAIN CONTAINER
+========================= -->
+
+<div class="dashboard-container">
+
+
+    <!-- =========================
+         PAGE HEADER
+    ========================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="welcome-small">
+                📅 PLAN YOUR WEEK
+            </p>
+
+            <h1>
+                My Timetable
+            </h1>
+
+            <p>
+                Organize your classes and stay on track with your week.
+            </p>
+
+        </div>
+
+        <div class="header-emoji">
+            📚
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ADD CLASS
+    ========================= -->
+
+    <div class="card add-habit-card">
+
+        <h2>
+            ➕ Add a Class
+        </h2>
+
+        <form
+            action="{{ url_for('add_class') }}"
+            method="POST"
+            class="timetable-form"
+        >
+
+            <!-- DAY -->
+
+            <select name="day" required>
+
+                <option value="">
+                    Select Day
+                </option>
+
+                <option value="Monday">
+                    Monday
+                </option>
+
+                <option value="Tuesday">
+                    Tuesday
+                </option>
+
+                <option value="Wednesday">
+                    Wednesday
+                </option>
+
+                <option value="Thursday">
+                    Thursday
+                </option>
+
+                <option value="Friday">
+                    Friday
+                </option>
+
+                <option value="Saturday">
+                    Saturday
+                </option>
+
+            </select>
+
+
+            <!-- TIME -->
+
+            <input
+                type="time"
+                name="time"
+                required
+            >
+
+
+            <!-- SUBJECT -->
+
+            <input
+                type="text"
+                name="subject"
+                placeholder="Subject / Class"
+                required
+            >
+
+
+            <!-- LOCATION -->
+
+            <input
+                type="text"
+                name="location"
+                placeholder="Room / Location"
+            >
+
+
+            <!-- BUTTON -->
+
+            <button type="submit">
+                ➕ Add Class
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =========================
+         TIMETABLE
+    ========================= -->
+
+    <h2 class="section-title">
+        📚 Weekly Schedule
+    </h2>
+
+
+    <div class="timetable-grid">
+
+        {% for day in day_order %}
+
+        <div class="card day-column">
+
+            <!-- DAY HEADING -->
+
+            <div class="day-heading">
+
+                <div class="day-icon">
+
+                    {% if day == "Monday" %}
+                        🌱
+                    {% elif day == "Tuesday" %}
+                        🌸
+                    {% elif day == "Wednesday" %}
+                        🌼
+                    {% elif day == "Thursday" %}
+                        🌻
+                    {% elif day == "Friday" %}
+                        ✨
+                    {% elif day == "Saturday" %}
+                        🎉
+                    {% endif %}
+
+                </div>
+
+                <h2>
+                    {{ day }}
+                </h2>
+
+            </div>
+
+
+            <!-- CLASSES -->
+
+            {% if timetable[day] %}
+
+                {% for class in timetable[day] %}
+
+                <div class="class-entry">
+
+                    <div class="class-time">
+                        ⏰ {{ class.time }}
+                    </div>
+
+                    <div class="class-subject">
+                        {{ class.subject }}
+                    </div>
+
+                    {% if class.location %}
+
+                    <div class="class-location">
+                        📍 {{ class.location }}
+                    </div>
+
+                    {% endif %}
+
+
+                    <!-- DELETE -->
+
+                    <a
+                        href="{{ url_for('delete_class', class_id=class.id) }}"
+                        class="class-delete"
+                        onclick="return confirm('Delete this class?')"
+                    >
+                        ✕
+                    </a>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <!-- EMPTY DAY -->
+
+                <div class="empty-day">
+
+                    <span>
+                        ☕
+                    </span>
+
+                    <p>
+                        No classes
+                    </p>
+
+                    <small>
+                        Enjoy your free time!
+                    </small>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =========================
+         PET COACH
+    ========================= -->
+
+    <div class="card timetable-coach">
+
+        <div class="coach-pet">
+
+    {{ pet_emojis.get(user['pet_type'], '🐼') }}
+
+</div>
+
+        <div>
+
+            <h2>
+                Your Pet Coach says 💜
+            </h2>
+
+            <p>
+                Keep your timetable organized and make sure
+                you give yourself enough time to study, rest,
+                and have fun!
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

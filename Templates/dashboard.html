@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>MonAgenda | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="lifesync-dashboard">
+
+<!-- =====================================================
+     TOP HEADER
+===================================================== -->
+
+<header class="ls-header">
+
+    <div class="ls-greeting">
+
+        <span class="ls-small-text">
+            GOOD DAY! ✨
+        </span>
+
+        <h1>
+            {{ username }}
+        </h1>
+
+        <p>
+            Let's make today a good one.
+        </p>
+
+    </div>
+
+    <div class="ls-level">
+        <span>LV</span>
+        {{ level }}
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     WEEKLY STREAK
+===================================================== -->
+
+<section class="ls-week">
+
+    {% for day in week_status %}
+
+        <div class="ls-day {% if day.completed %}active{% endif %}">
+
+            <span>{{ day.date.strftime("%a").upper() }}</span>
+
+            {% if day.completed %}
+                <strong>🔥</strong>
+            {% else %}
+                <strong>○</strong>
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+</section>
+
+<!-- =====================================================
+     MAIN PET AREA
+===================================================== -->
+
+<main class="ls-main">
+
+    <div class="ls-focus-title">
+
+        <button class="arrow-btn">
+            ‹
+        </button>
+
+        <div>
+            <h2>Today's Focus</h2>
+
+            <span>
+                STUDY • HABITS • WELLNESS
+            </span>
+        </div>
+
+        <button class="arrow-btn">
+            ›
+        </button>
+
+    </div>
+
+
+    <!-- PET -->
+
+    <div class="ls-pet-area">
+
+        <div class="ls-pet-glow"></div>
+
+       <div class="ls-pet">
+    {{ pet_emojis.get(user["pet_type"], "🐼") }}
+</div>
+
+<h2 class="ls-pet-name">
+    {{ user["pet_name"] }}
+</h2>
+
+<p class="ls-pet-status">
+    {{ pet_message }}
+</p>
+
+    </div>
+
+
+    <!-- =================================================
+         STATS
+    ================================================= -->
+
+    <div class="ls-stats">
+
+        <div class="ls-stat-card">
+
+            <strong>0</strong>
+
+            <span>
+                CURRENT STREAK
+            </span>
+
+        </div>
+
+        <div class="ls-stat-card">
+
+            <strong>0</strong>
+
+            <span>
+                BEST STREAK
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         XP
+    ================================================= -->
+
+    <div class="ls-xp-section">
+
+        <div class="ls-xp-top">
+
+            <span>
+                LEVEL {{ level }}
+            </span>
+
+            <strong>
+                {{ xp }} XP
+            </strong>
+
+        </div>
+
+        <div class="ls-xp-bar">
+
+            <div class="ls-xp-fill"
+                 style="width: {{ xp_percentage }}%;">
+            </div>
+
+        </div>
+
+        <small>
+            Keep going! Your next level is getting closer ✨
+        </small>
+
+    </div>
+
+
+    <!-- =================================================
+         MAIN ACTION
+    ================================================= -->
+
+    <a href="{{ url_for('habits') }}"
+       class="ls-review-btn">
+
+        ✨ Review Today
+
+    </a>
+
+
+    <!-- =================================================
+         QUICK FEATURES
+    ================================================= -->
+
+    <section class="ls-features">
+
+        <a href="{{ url_for('habits') }}"
+           class="ls-feature">
+
+            <div class="feature-icon pink">
+                ✓
+            </div>
+
+            <div>
+                <strong>Habits</strong>
+                <small>
+                    Build your routine
+                </small>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('timetable') }}"
+           class="ls-feature">
+
+            <div class="feature-icon blue">
+                📅
+            </div>
+
+            <div>
+                <strong>Planner</strong>
+                <small>
+                    Organize your day
+                </small>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('medicine') }}"
+           class="ls-feature">
+
+            <div class="feature-icon green">
+                💊
+            </div>
+
+            <div>
+                <strong>Reminders</strong>
+                <small>
+                    Never miss one
+                </small>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('mood') }}"
+           class="ls-feature">
+
+            <div class="feature-icon yellow">
+                💛
+            </div>
+
+            <div>
+                <strong>Mood</strong>
+                <small>
+                    Check in with yourself
+                </small>
+            </div>
+
+        </a>
+<!-- =================================================
+     PETBOT
+================================================= -->
+
+<a href="{{ url_for('petbot') }}"
+   class="ls-feature petbot-feature">
+
+    <div class="feature-icon purple">
+        💬
+    </div>
+
+    <div>
+        <strong>PetBot</strong>
+
+        <small>
+            Chat with {{ user["pet_name"] }} 🐾
+        </small>
+    </div>
+
+</a>
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     BOTTOM NAVIGATION
+===================================================== -->
+
+<nav class="ls-bottom-nav">
+
+    <a href="{{ url_for('dashboard') }}"
+       class="ls-nav-item active">
+
+        <span>⌂</span>
+
+        <small>Home</small>
+
+    </a>
+
+
+    <a href="{{ url_for('habits') }}"
+       class="ls-nav-item">
+
+        <span>✓</span>
+
+        <small>Habits</small>
+
+    </a>
+
+
+    <a href="{{ url_for('timetable') }}"
+       class="ls-nav-item">
+
+        <span>◈</span>
+
+        <small>Planner</small>
+
+    </a>
+
+
+    <a href="{{ url_for('mood') }}"
+       class="ls-nav-item">
+
+        <span>♡</span>
+
+        <small>Mood</small>
+
+    </a>
+
+</nav>
+<!-- THEME CENTER -->
+<section class="theme-center">
+
+    <h2>🎨 Customize Your Theme</h2>
+    <p>Choose a theme that matches your mood.</p>
+
+    <div class="theme-grid">
+
+        <button class="theme-option" onclick="changeTheme('light')">
+            ☀️
+            <span>Light</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('dark')">
+            🌙
+            <span>Dark</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('blossom')">
+            🌸
+            <span>Blossom</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('ocean')">
+            🌊
+            <span>Ocean</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('nature')">
+            🌿
+            <span>Nature</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('midnight')">
+            🌌
+            <span>Midnight</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('sunset')">
+            🔥
+            <span>Sunset</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('lavender')">
+            💜
+            <span>Lavender</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('blackgold')">
+            🖤
+            <span>Black & Gold</span>
+        </button>
+
+        <button class="theme-option" onclick="changeTheme('electric')">
+            ⚡
+            <span>Electric Blue</span>
+        </button>
+
+    </div>
+
+</section>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

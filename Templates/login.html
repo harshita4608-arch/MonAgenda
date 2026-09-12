@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonAgenda - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/monagenda-icon.png') }}">
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <div class="login-logo">
+    <img src="{{ url_for('static', filename='images/monagenda-icon.png') }}" alt="MonAgenda Panda">
+</div>
+        <h1>MonAgenda </h1>
+        <p class="tagline">Grow Yourself. Grow Your Pet. Grow Together.</p>
+
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <input type="text" name="username" placeholder="Username" required autofocus>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login / Sign Up</button>
+        </form>
+
+        <p class="login-hint">New here? Just enter a username & password — your account is created automatically. ✨</p>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

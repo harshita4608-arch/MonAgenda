@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MonAgenda - SkillSwap</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+         MonAgenda 
+    </div>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+
+        <a href="{{ url_for('habits') }}">✅ Habits</a>
+
+        <a href="{{ url_for('pets') }}">🐾 Pet Coach</a>
+
+        <a href="{{ url_for('timetable') }}">📅 Timetable</a>
+
+        <a href="{{ url_for('medicine') }}">💊 Medicine</a>
+
+        <a href="{{ url_for('skills') }}">🤝 SkillSwap</a>
+
+        <a href="{{ url_for('mood') }}">🧠 Mood</a>
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="dashboard-container">
+
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="welcome-small">
+                LEARN • TEACH • CONNECT 🤝
+            </p>
+
+            <h1>
+                SkillSwap Hub
+            </h1>
+
+            <p>
+                Share what you know and discover something new.
+            </p>
+
+        </div>
+
+        <div class="header-emoji">
+            🤝
+        </div>
+
+    </div>
+
+
+    <!-- ================= PROFILE FORM ================= -->
+
+    <div class="card">
+
+        <h2>
+            ✨ My Skill Profile
+        </h2>
+
+        <p class="page-subtitle">
+            Tell the LifeSync community what you can teach
+            and what you want to learn.
+        </p>
+
+
+        <form
+            action="{{ url_for('update_skills') }}"
+            method="POST"
+            class="skill-form"
+        >
+
+            <label>
+                🎓 I can teach
+            </label>
+
+            <input
+                type="text"
+                name="can_teach"
+                placeholder="Example: Python, Canva, C++, Excel"
+                value="{% if profile %}{{ profile['can_teach'] }}{% endif %}"
+                required
+            >
+
+
+            <label>
+                📚 I want to learn
+            </label>
+
+            <input
+                type="text"
+                name="want_learn"
+                placeholder="Example: Web Development, AI, Java"
+                value="{% if profile %}{{ profile['want_learn'] }}{% endif %}"
+                required
+            >
+
+
+            <button type="submit">
+                💾 Save My Skills
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= CURRENT PROFILE ================= -->
+
+    {% if profile %}
+
+    <div class="card">
+
+        <h2>
+            🌟 Your Skill Profile
+        </h2>
+
+        <div class="skill-profile">
+
+            <div class="skill-box">
+
+                <h3>
+                    🎓 Can Teach
+                </h3>
+
+                <p>
+                    {{ profile['can_teach'] }}
+                </p>
+
+            </div>
+
+
+            <div class="skill-box">
+
+                <h3>
+                    📚 Want To Learn
+                </h3>
+
+                <p>
+                    {{ profile['want_learn'] }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================= COMMUNITY MATCHES ================= -->
+
+    <h2 class="section-title">
+        🔎 Skill Matches
+    </h2>
+
+
+    <div class="card">
+
+        <h2>
+            🤝 Students You Could Connect With
+        </h2>
+
+        <div class="match-card">
+
+            <div class="match-avatar">
+                👩‍💻
+            </div>
+
+            <div class="match-info">
+
+                <h3>
+                    Python Learner
+                </h3>
+
+                <p>
+                    Looking for someone who can help
+                    with Python and programming.
+                </p>
+
+                <span class="match-tag">
+                    🐍 Python
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="match-card">
+
+            <div class="match-avatar">
+                👨‍🎨
+            </div>
+
+            <div class="match-info">
+
+                <h3>
+                    Design Explorer
+                </h3>
+
+                <p>
+                    Wants to learn Canva and UI/UX design.
+                </p>
+
+                <span class="match-tag">
+                    🎨 Design
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="match-card">
+
+            <div class="match-avatar">
+                👩‍💻
+            </div>
+
+            <div class="match-info">
+
+                <h3>
+                    Web Developer
+                </h3>
+
+                <p>
+                    Interested in learning frontend
+                    and backend development.
+                </p>
+
+                <span class="match-tag">
+                    🌐 Web Development
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= PET COACH ================= -->
+
+    <div class="card pet-coach-card">
+
+       <div class="coach-pet">
+    {{ pet_emojis.get(user['pet_type'], '🐼') }}
+</div>
+        <h2>
+            Your Pet Coach says 💜
+        </h2>
+
+        <p>
+            Learning becomes easier when we learn
+            together! Teach someone today and
+            discover a new skill tomorrow. 🌱
+        </p>
+
+    </div>
+
+
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

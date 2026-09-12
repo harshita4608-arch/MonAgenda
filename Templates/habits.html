@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>MonAgenda - Habits</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+         <span>MonAgenda</span> <b>AI</b>
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('dashboard') }}">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('habits') }}" class="active">
+            ✅ Habits
+        </a>
+
+        <a href="{{ url_for('pets') }}">
+            🐾 Pet Coach
+        </a>
+
+        <a href="{{ url_for('timetable') }}">
+            📅 Timetable
+        </a>
+
+        <a href="{{ url_for('medicine') }}">
+            💊 Medicine
+        </a>
+
+        <a href="{{ url_for('skills') }}">
+            🤝 SkillSwap
+        </a>
+
+        <a href="{{ url_for('mood') }}">
+            🧠 Mood
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="logout-link">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     MAIN CONTAINER
+===================================================== -->
+
+<div class="dashboard-container">
+
+
+    <!-- =================================================
+         PAGE HERO
+    ================================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <div class="welcome-small">
+                YOUR DAILY ROUTINE ✨
+            </div>
+
+            <h1>
+                Build Better Habits 🌱
+            </h1>
+
+            <p>
+                Small actions today create a better version
+                of you tomorrow.
+            </p>
+
+        </div>
+
+
+        <div class="header-emoji habit-hero-emoji">
+            🌱
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         ADD HABIT
+    ================================================= -->
+
+    <div class="card add-habit-card">
+
+        <div class="add-habit-heading">
+
+            <div class="big-card-icon">
+                ➕
+            </div>
+
+            <div>
+
+                <h2>
+                    Create a New Habit
+                </h2>
+
+                <p>
+                    What positive habit do you want to build?
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            action="{{ url_for('add_habit') }}"
+            method="POST"
+            class="habit-form"
+        >
+
+            <input
+                type="text"
+                name="habit_name"
+                placeholder="e.g. Drink 2L water, Study Python, Walk 10k steps..."
+                required
+            >
+
+
+            <button type="submit">
+                ✨ Add Habit
+            </button>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- =================================================
+         PET COACH
+    ================================================= -->
+
+    <div class="card habit-coach">
+
+        <div class="coach-pet">
+
+    {{ pet_emojis.get(user["pet_type"], "🐼") }}
+
+</div>
+
+        <div class="coach-content">
+
+            <span class="coach-label">
+                🐾 PET COACH
+            </span>
+
+            <h2>
+                Let's build your streak! 💜
+            </h2>
+
+            <p>
+                Complete your habits every day to earn XP,
+                collect treats and make your pet happier.
+            </p>
+
+
+            <div class="reward-info">
+
+                <span>
+                    ⚡ +10 XP
+                </span>
+
+                <span>
+                    🍪 +2 Treats
+                </span>
+
+                <span>
+                    🔥 Build Streak
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         SECTION TITLE
+    ================================================= -->
+
+    <div class="section-heading-row">
+
+        <div>
+
+            <span class="section-mini-title">
+                YOUR ROUTINE
+            </span>
+
+            <h2 class="section-title">
+                📋 Today's Habits
+            </h2>
+
+        </div>
+
+
+        <div class="habit-count">
+
+            🌱
+            {{ habits|length }}
+            habit{% if habits|length != 1 %}s{% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         HABIT GRID
+    ================================================= -->
+
+    <div class="habit-grid">
+
+
+        {% if habits %}
+
+
+            {% for habit in habits %}
+
+
+                {% if habit.completed_today %}
+
+
+                    <!-- =================================
+                         COMPLETED HABIT
+                    ================================= -->
+
+                    <div class="card habit-card habit-done">
+
+
+                        <div class="habit-top">
+
+
+                            <div class="habit-icon completed-icon">
+                                ✓
+                            </div>
+
+
+                            <div class="habit-info">
+
+                                <h3>
+                                    {{ habit.name }}
+                                </h3>
+
+                                <p>
+                                    🔥 {{ habit.streak }} day streak
+                                </p>
+
+                            </div>
+
+
+                            <div class="habit-status">
+                                DONE
+                            </div>
+
+                        </div>
+
+
+                        <div class="completed-message">
+
+                            <strong>
+                                🎉 Completed today!
+                            </strong>
+
+                            <span>
+                                ⚡ +10 XP &nbsp;&nbsp; 🍪 +2 Treats
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <!-- =================================
+                         ACTIVE HABIT
+                    ================================= -->
+
+                    <div class="card habit-card">
+
+
+                        <div class="habit-top">
+
+
+                            <div class="habit-icon">
+                                🌱
+                            </div>
+
+
+                            <div class="habit-info">
+
+                                <h3>
+                                    {{ habit.name }}
+                                </h3>
+
+                                <p>
+                                    🔥 {{ habit.streak }} day streak
+                                </p>
+
+                            </div>
+
+
+                            <div class="habit-status pending">
+                                TODAY
+                            </div>
+
+                        </div>
+
+
+                        <div class="habit-progress-text">
+
+                            <span>
+                                Keep your streak alive!
+                            </span>
+
+                            <span>
+                                +10 XP
+                            </span>
+
+                        </div>
+
+
+                        <form
+                            action="{{ url_for('complete_habit', habit_id=habit.id) }}"
+                            method="POST"
+                        >
+
+                            <button
+                                type="submit"
+                                class="complete-habit-btn"
+                            >
+
+                                ✓ Complete Habit
+
+                            </button>
+
+                        </form>
+
+
+                    </div>
+
+
+                {% endif %}
+
+
+            {% endfor %}
+
+
+        {% else %}
+
+
+            <!-- =========================================
+                 EMPTY STATE
+            ========================================== -->
+
+            <div class="card empty-habits">
+
+
+                <div class="empty-habit-icon">
+                    🌱
+                </div>
+
+
+                <h2>
+                    Your habit journey starts here!
+                </h2>
+
+
+                <p>
+                    Add your first habit above and start
+                    building a stronger daily routine.
+                </p>
+
+
+                <div class="empty-decoration">
+                    ✨ 🔥 ✨
+                </div>
+
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+
+    <!-- =================================================
+         MOTIVATION
+    ================================================= -->
+
+    <div class="card habit-motivation">
+
+
+        <div class="motivation-icons">
+            🔥 🌱 ⭐
+        </div>
+
+
+        <div>
+
+            <h2>
+                Consistency beats motivation. 💜
+            </h2>
+
+            <p>
+                You don't have to be perfect.
+                Just keep showing up.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

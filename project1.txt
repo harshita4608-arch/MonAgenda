@@ -1,0 +1,16 @@
+Project 1
+│
+├── app.py
+│
+├── templates
+│   ├── login.html
+│   ├── dashboard.html   ← CHANGE THIS ONE
+│   ├── habits.html
+│   ├── timetable.html
+│   ├── medicine.html
+│   ├── mental_health.html
+│   ├── skill_swap.html
+│   └── pets.html
+│
+└── static
+    └── style.css

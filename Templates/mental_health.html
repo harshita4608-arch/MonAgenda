@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MonAgenda - Mood & Wellness</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+        🐼 MonAgenda 
+    </div>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+        <a href="{{ url_for('habits') }}">✅ Habits</a>
+        <a href="{{ url_for('pets') }}">🐾 Pet Coach</a>
+        <a href="{{ url_for('timetable') }}">📅 Timetable</a>
+        <a href="{{ url_for('medicine') }}">💊 Medicine</a>
+        <a href="{{ url_for('skills') }}">🤝 SkillSwap</a>
+        <a href="{{ url_for('mood') }}">🧠 Mood</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="dashboard-container">
+
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="welcome-small">
+                CHECK IN WITH YOURSELF 🌸
+            </p>
+
+            <h1>
+                How are you feeling today?
+            </h1>
+
+            <p>
+                Take a moment to understand your mood.
+            </p>
+
+        </div>
+
+        <div class="header-emoji">
+            🧠
+        </div>
+
+    </div>
+
+
+    <!-- ================= MOOD CHECK-IN ================= -->
+
+    <div class="card">
+
+        <h2>
+            💭 Today's Mood
+        </h2>
+
+        <p class="page-subtitle">
+            There is no right or wrong feeling.
+            Choose the one that feels closest to you.
+        </p>
+
+
+        <form
+            action="{{ url_for('log_mood') }}"
+            method="POST"
+            class="mood-form"
+        >
+
+            <div class="mood-options">
+
+                <label class="mood-option">
+
+                    <input
+                        type="radio"
+                        name="mood"
+                        value="Happy"
+                        required
+                    >
+
+                    <span>
+                        😄
+                    </span>
+
+                    <small>
+                        Happy
+                    </small>
+
+                </label>
+
+
+                <label class="mood-option">
+
+                    <input
+                        type="radio"
+                        name="mood"
+                        value="Good"
+                    >
+
+                    <span>
+                        🙂
+                    </span>
+
+                    <small>
+                        Good
+                    </small>
+
+                </label>
+
+
+                <label class="mood-option">
+
+                    <input
+                        type="radio"
+                        name="mood"
+                        value="Okay"
+                    >
+
+                    <span>
+                        😐
+                    </span>
+
+                    <small>
+                        Okay
+                    </small>
+
+                </label>
+
+
+                <label class="mood-option">
+
+                    <input
+                        type="radio"
+                        name="mood"
+                        value="Sad"
+                    >
+
+                    <span>
+                        😔
+                    </span>
+
+                    <small>
+                        Sad
+                    </small>
+
+                </label>
+
+
+                <label class="mood-option">
+
+                    <input
+                        type="radio"
+                        name="mood"
+                        value="Stressed"
+                    >
+
+                    <span>
+                        😣
+                    </span>
+
+                    <small>
+                        Stressed
+                    </small>
+
+                </label>
+
+            </div>
+
+
+            <!-- NOTE -->
+
+            <textarea
+                name="note"
+                placeholder="Want to write something about your day? (optional)"
+                rows="4"
+            ></textarea>
+
+
+            <button
+                type="submit"
+                class="mood-submit"
+            >
+                💜 Save My Mood
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= PET MESSAGE ================= -->
+
+    <div class="card pet-message">
+
+        <h3>
+            🐼 {{ user['pet_name'] }} says...
+        </h3>
+
+        <p>
+            Whatever you're feeling today is okay.
+            Take things one step at a time.
+            I'm here with you. 🌸
+        </p>
+
+    </div>
+
+
+    <!-- ================= MOOD HISTORY ================= -->
+
+    <h2 class="section-title">
+        📖 Your Recent Mood Journal
+    </h2>
+
+
+    <div class="card mood-history">
+
+        {% if mood_history %}
+
+            {% for mood in mood_history %}
+
+                <div class="mood-history-item">
+
+                    <div class="mood-history-icon">
+
+                        {% if mood['mood'] == 'Happy' %}
+                            😄
+                        {% elif mood['mood'] == 'Good' %}
+                            🙂
+                        {% elif mood['mood'] == 'Okay' %}
+                            😐
+                        {% elif mood['mood'] == 'Sad' %}
+                            😔
+                        {% elif mood['mood'] == 'Stressed' %}
+                            😣
+                        {% else %}
+                            💭
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="mood-history-info">
+
+                        <strong>
+                            {{ mood['mood'] }}
+                        </strong>
+
+                        <small>
+                            {{ mood['date'] }}
+                        </small>
+
+                        {% if mood['note'] %}
+
+                            <p>
+                                {{ mood['note'] }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-mood">
+
+                <div>
+                    🌱
+                </div>
+
+                <h2>
+                    No mood entries yet
+                </h2>
+
+                <p>
+                    Your mood journal will appear here
+                    after your first check-in.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ================= WELLNESS TIPS ================= -->
+
+    <div class="card wellness-card">
+
+        <h2>
+            🌿 Little Wellness Reminders
+        </h2>
+
+        <div class="wellness-grid">
+
+            <div>
+                💧
+                <strong>
+                    Stay Hydrated
+                </strong>
+
+                <p>
+                    Keep drinking water throughout
+                    the day.
+                </p>
+            </div>
+
+
+            <div>
+                😴
+                <strong>
+                    Rest
+                </strong>
+
+                <p>
+                    Give your mind and body enough
+                    time to recharge.
+                </p>
+            </div>
+
+
+            <div>
+                🚶
+                <strong>
+                    Take a Break
+                </strong>
+
+                <p>
+                    Step away from your screen and
+                    move around sometimes.
+                </p>
+            </div>
+
+
+            <div>
+                💜
+                <strong>
+                    Be Kind to Yourself
+                </strong>
+
+                <p>
+                    You don't have to be productive
+                    every moment.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= NOTE ================= -->
+
+    <div class="medicine-note">
+
+        💜 <strong>Remember:</strong>
+
+        MonAgenda is a wellness companion, not a
+        replacement for professional mental-health care.
+        If you are struggling, consider reaching out to
+        someone you trust or a qualified professional.
+
+    </div>
+
+
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

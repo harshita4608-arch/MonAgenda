@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MonAgenda - My Buddy</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+{% set pet_emojis = {
+    'Panda': '🐼',
+    'Cat': '🐱',
+    'Dog': '🐶',
+    'Bunny': '🐰',
+    'Chick': '🐥',
+    'Dinosaur': '🦖',
+    'Duck': '🦆',
+    'Penguin': '🐧',
+    'Squirrel': '🐿️',
+    'Dove': '🕊️',
+    'Giraffe': '🦒',
+    'Fish': '🐟',
+    'Lion': '🦁',
+    'Shark': '🦈',
+    'Tiger': '🐯',
+    'Elephant': '🐘',
+    'Polar Bear': '🐻‍❄️',
+    'Lizard': '🦎',
+    'Butterfly': '🦋',
+    'Owl': '🦉',
+    'Horse': '🐴',
+    'Goat': '🐐',
+    'Monkey': '🐒',
+    'Frog': '🐸',
+    'Cow': '🐄',
+    'Fox': '🦊',
+    'Kangaroo': '🦘',
+    'Hippo': '🦛',
+    'Dolphin': '🐬',
+    'Donkey': '🫏',
+    'Camel': '🐪'
+} %}
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+        🐾 MonAgenda
+    </div>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('dashboard') }}">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('habits') }}">
+            ✅ Habits
+        </a>
+
+        <a href="{{ url_for('pets') }}">
+            🐾 Pet Coach
+        </a>
+
+        <a href="{{ url_for('timetable') }}">
+            📅 Timetable
+        </a>
+
+        <a href="{{ url_for('medicine') }}">
+            💊 Medicine
+        </a>
+
+        <a href="{{ url_for('skills') }}">
+            🤝 SkillSwap
+        </a>
+
+        <a href="{{ url_for('mood') }}">
+            🧠 Mood
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="dashboard-container">
+
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="page-header pet-page-header">
+
+        <div>
+
+            <p class="welcome-small">
+                YOUR PERSONAL COMPANION 🐾
+            </p>
+
+            <h1>
+                Meet {{ user['pet_name'] }} 💜
+            </h1>
+
+            <p>
+                Your little coach is here to motivate you,
+                celebrate your progress and grow with you.
+            </p>
+
+        </div>
+
+        <!-- DYNAMIC PET -->
+
+        <div class="header-emoji">
+            {{ pet_emojis.get(user['pet_type'], '🐼') }}
+        </div>
+
+    </div>
+
+
+    <!-- ================= PET CARD ================= -->
+
+    <div class="pet-card-large">
+
+        <div class="pet-decoration pet-star">
+            ✨
+        </div>
+
+        <div class="pet-decoration pet-heart">
+            💕
+        </div>
+
+
+        <!-- DYNAMIC PET -->
+
+        <div class="pet-emoji-large">
+            {{ pet_emojis.get(user['pet_type'], '🐼') }}
+        </div>
+
+
+        <h2>
+            {{ user['pet_name'] }}
+        </h2>
+
+        <p class="pet-type">
+            {{ user['pet_type'] }} • Your LifeSync Companion
+        </p>
+
+
+        <!-- ================= PET STATS ================= -->
+
+        <div class="pet-stats">
+
+            <div>
+
+                <span>🏆</span>
+
+                <strong>
+                    Level {{ user['pet_level'] }}
+                </strong>
+
+                <small>
+                    Pet Level
+                </small>
+
+            </div>
+
+
+            <div>
+
+                <span>❤️</span>
+
+                <strong>
+                    {{ user['pet_happiness'] }}%
+                </strong>
+
+                <small>
+                    Happiness
+                </small>
+
+            </div>
+
+
+            <div>
+
+                <span>🍪</span>
+
+                <strong>
+                    {{ user['pet_treats'] }}
+                </strong>
+
+                <small>
+                    Treats
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= HAPPINESS ================= -->
+
+        <div class="pet-happiness">
+
+            <div class="happiness-header">
+
+                <strong>
+                    Happiness
+                </strong>
+
+                <span>
+                    {{ user['pet_happiness'] }}%
+                </span>
+
+            </div>
+
+            <div class="happiness-bar">
+
+                <div
+                    class="happiness-fill"
+                    style="width: {{ user['pet_happiness'] }}%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= FEED PET ================= -->
+
+        <form
+            action="{{ url_for('feed_pet') }}"
+            method="POST"
+        >
+
+            <button
+                type="submit"
+                class="feed-btn"
+
+                {% if user['pet_treats'] < 5 %}
+                    disabled
+                {% endif %}
+            >
+
+                🍪 Feed {{ user['pet_name'] }}
+
+            </button>
+
+        </form>
+
+
+        {% if user['pet_treats'] < 5 %}
+
+            <p class="feed-hint">
+                You need 5 treats to feed your pet.
+            </p>
+
+        {% else %}
+
+            <p class="feed-hint">
+                Feeding your pet increases happiness 💕
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ================= COACH MESSAGE ================= -->
+
+    <div class="card pet-message">
+
+        <!-- DYNAMIC PET -->
+
+        <div class="message-pet">
+            {{ pet_emojis.get(user['pet_type'], '🐼') }}
+        </div>
+
+
+        <div>
+
+            <h2>
+                💬 Your Pet Says
+            </h2>
+
+
+            {% if user['pet_happiness'] >= 80 %}
+
+                <p>
+                    "I'm feeling amazing! 😄
+                    Let's crush today's goals together!"
+                </p>
+
+            {% elif user['pet_happiness'] >= 50 %}
+
+                <p>
+                    "I'm doing okay! 🙂
+                    Complete a few tasks and let's grow together!"
+                </p>
+
+            {% else %}
+
+                <p>
+                    "I miss you! 🥺
+                    Give me some attention and let's get back on track!"
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= CUSTOMIZE PET ================= -->
+
+    <div class="card pet-customize-card">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-icon">
+                    🎨
+                </span>
+
+                <div>
+
+                    <h2>
+                        Customize Your Pet
+                    </h2>
+
+                    <p>
+                        Give your companion a name and personality.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <form
+            action="{{ url_for('update_pet') }}"
+            method="POST"
+            class="pet-form"
+        >
+
+            <!-- PET NAME -->
+
+            <label>
+                🏷️ Pet Name
+            </label>
+
+            <input
+                type="text"
+                name="pet_name"
+                value="{{ user['pet_name'] }}"
+                placeholder="Enter pet name"
+                required
+            >
+
+
+            <!-- PET TYPE -->
+
+            <label>
+                🐾 Choose Pet
+            </label>
+
+
+            <select name="pet_type">
+
+                <option value="Panda"
+                    {% if user['pet_type'] == 'Panda' %}selected{% endif %}>
+                    🐼 Panda
+                </option>
+
+                <option value="Cat"
+                    {% if user['pet_type'] == 'Cat' %}selected{% endif %}>
+                    🐱 Cat
+                </option>
+
+                <option value="Dog"
+                    {% if user['pet_type'] == 'Dog' %}selected{% endif %}>
+                    🐶 Dog
+                </option>
+
+                <option value="Bunny"
+                    {% if user['pet_type'] == 'Bunny' %}selected{% endif %}>
+                    🐰 Bunny
+                </option>
+
+                <option value="Chick"
+                    {% if user['pet_type'] == 'Chick' %}selected{% endif %}>
+                    🐥 Chick
+                </option>
+
+                <option value="Dinosaur"
+                    {% if user['pet_type'] == 'Dinosaur' %}selected{% endif %}>
+                    🦖 Dinosaur
+                </option>
+
+                <option value="Duck"
+                    {% if user['pet_type'] == 'Duck' %}selected{% endif %}>
+                    🦆 Duck
+                </option>
+
+                <option value="Penguin"
+                    {% if user['pet_type'] == 'Penguin' %}selected{% endif %}>
+                    🐧 Penguin
+                </option>
+
+                <option value="Squirrel"
+                    {% if user['pet_type'] == 'Squirrel' %}selected{% endif %}>
+                    🐿️ Squirrel
+                </option>
+
+                <option value="Dove"
+                    {% if user['pet_type'] == 'Dove' %}selected{% endif %}>
+                    🕊️ Dove
+                </option>
+
+                <option value="Giraffe"
+                    {% if user['pet_type'] == 'Giraffe' %}selected{% endif %}>
+                    🦒 Giraffe
+                </option>
+
+                <option value="Fish"
+                    {% if user['pet_type'] == 'Fish' %}selected{% endif %}>
+                    🐟 Fish
+                </option>
+
+                <option value="Lion"
+                    {% if user['pet_type'] == 'Lion' %}selected{% endif %}>
+                    🦁 Lion
+                </option>
+
+                <option value="Shark"
+                    {% if user['pet_type'] == 'Shark' %}selected{% endif %}>
+                    🦈 Shark
+                </option>
+
+                <option value="Tiger"
+                    {% if user['pet_type'] == 'Tiger' %}selected{% endif %}>
+                    🐯 Tiger
+                </option>
+
+                <option value="Elephant"
+                    {% if user['pet_type'] == 'Elephant' %}selected{% endif %}>
+                    🐘 Elephant
+                </option>
+
+                <option value="Polar Bear"
+                    {% if user['pet_type'] == 'Polar Bear' %}selected{% endif %}>
+                    🐻‍❄️ Polar Bear
+                </option>
+
+                <option value="Lizard"
+                    {% if user['pet_type'] == 'Lizard' %}selected{% endif %}>
+                    🦎 Lizard
+                </option>
+
+                <option value="Butterfly"
+                    {% if user['pet_type'] == 'Butterfly' %}selected{% endif %}>
+                    🦋 Butterfly
+                </option>
+
+                <option value="Owl"
+                    {% if user['pet_type'] == 'Owl' %}selected{% endif %}>
+                    🦉 Owl
+                </option>
+
+                <option value="Horse"
+                    {% if user['pet_type'] == 'Horse' %}selected{% endif %}>
+                    🐴 Horse
+                </option>
+
+                <option value="Goat"
+                    {% if user['pet_type'] == 'Goat' %}selected{% endif %}>
+                    🐐 Goat
+                </option>
+
+                <option value="Monkey"
+                    {% if user['pet_type'] == 'Monkey' %}selected{% endif %}>
+                    🐒 Monkey
+                </option>
+
+                <option value="Frog"
+                    {% if user['pet_type'] == 'Frog' %}selected{% endif %}>
+                    🐸 Frog
+                </option>
+
+                <option value="Cow"
+                    {% if user['pet_type'] == 'Cow' %}selected{% endif %}>
+                    🐄 Cow
+                </option>
+
+                <option value="Fox"
+                    {% if user['pet_type'] == 'Fox' %}selected{% endif %}>
+                    🦊 Fox
+                </option>
+
+                <option value="Kangaroo"
+                    {% if user['pet_type'] == 'Kangaroo' %}selected{% endif %}>
+                    🦘 Kangaroo
+                </option>
+
+                <option value="Hippo"
+                    {% if user['pet_type'] == 'Hippo' %}selected{% endif %}>
+                    🦛 Hippo
+                </option>
+
+                <option value="Dolphin"
+                    {% if user['pet_type'] == 'Dolphin' %}selected{% endif %}>
+                    🐬 Dolphin
+                </option>
+
+                <option value="Donkey"
+                    {% if user['pet_type'] == 'Donkey' %}selected{% endif %}>
+                    🫏 Donkey
+                </option>
+
+                <option value="Camel"
+                    {% if user['pet_type'] == 'Camel' %}selected{% endif %}>
+                    🐪 Camel
+                </option>
+
+            </select>
+
+
+            <button type="submit">
+                ✨ Save Pet
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= PET TIPS ================= -->
+
+    <div class="card pet-tips">
+
+        <h2>
+            🌱 How Your Pet Grows
+        </h2>
+
+        <div class="pet-tip-grid">
+
+            <div>
+                <span>✅</span>
+                <strong>Complete Habits</strong>
+                <small>Earn XP & treats</small>
+            </div>
+
+            <div>
+                <span>🧠</span>
+                <strong>Check Your Mood</strong>
+                <small>Take care of yourself</small>
+            </div>
+
+            <div>
+                <span>💊</span>
+                <strong>Stay Healthy</strong>
+                <small>Complete reminders</small>
+            </div>
+
+            <div>
+                <span>❤️</span>
+                <strong>Feed Your Pet</strong>
+                <small>Increase happiness</small>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
