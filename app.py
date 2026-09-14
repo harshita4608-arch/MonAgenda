@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 import sqlite3
+import os
 from datetime import date, timedelta
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
@@ -7,7 +8,10 @@ app = Flask(__name__, static_folder="static", static_url_path="/static")
 # FLASK SETTINGS
 # =========================================================
 
-app.secret_key = "monagenda-v1-7xQ9!pL2#kR8@mN5"
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "monagenda-local-development-key"
+)
 
 DB_PATH = "lifesync.db"
 
