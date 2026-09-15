@@ -18,10 +18,6 @@ DB_PATH = "lifesync.db"
 # =========================================================
 # PET EMOJIS
 # =========================================================
-
-# =========================================================
-# PET EMOJIS
-# =========================================================
 PET_EMOJIS = {
     "Panda": "🐼",
     "Cat": "🐱",
@@ -70,35 +66,11 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS habits (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        habit_name TEXT
-    )
-    """)
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS moods (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        mood TEXT,
-        mood_date TEXT
-    )
-    """)
-
-    conn.commit()
-    conn.close()
-
-    conn = get_db()
-
     # =====================================================
     # USERS
     # =====================================================
 
-    conn.execute("""
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
@@ -112,96 +84,42 @@ def init_db():
             level INTEGER DEFAULT 1
         )
     """)
-    
-
-    # =====================================================
-    # USER COLUMN MIGRATION
-    # =====================================================
-
-    columns = conn.execute(
-        "PRAGMA table_info(users)"
-    ).fetchall()
-
-    column_names = [column["name"] for column in columns]
-
-    if "xp" not in column_names:
-        conn.execute("""
-            ALTER TABLE users
-            ADD COLUMN xp INTEGER DEFAULT 0
-        """)
-
-    if "level" not in column_names:
-        conn.execute("""
-            ALTER TABLE users
-            ADD COLUMN level INTEGER DEFAULT 1
-        """)
-
-    if "pet_name" not in column_names:
-        conn.execute("""
-            ALTER TABLE users
-            ADD COLUMN pet_name TEXT DEFAULT 'Boba'
-        """)
-
-    if "pet_type" not in column_names:
-        conn.execute("""
-            ALTER TABLE users
-            ADD COLUMN pet_type TEXT DEFAULT 'Panda'
-        """)
-
-    if "pet_level" not in column_names:
-        conn.execute("""
-            ALTER TABLE users
-            ADD COLUMN pet_level INTEGER DEFAULT 1
-        """)
-
-    if "pet_happiness" not in column_names:
-        conn.execute("""
-            ALTER TABLE users
-            ADD COLUMN pet_happiness INTEGER DEFAULT 50
-        """)
-
-    if "pet_treats" not in column_names:
-        conn.execute("""
-            ALTER TABLE users
-            ADD COLUMN pet_treats INTEGER DEFAULT 0
-        """)
 
     # =====================================================
     # HABITS
     # =====================================================
 
-
-    conn.execute("""
-    CREATE TABLE IF NOT EXISTS habits (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        streak INTEGER DEFAULT 0,
-        last_completed_date TEXT,
-        FOREIGN KEY (user_id) REFERENCES users(id)
-    )
-""")
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS habits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            streak INTEGER DEFAULT 0,
+            last_completed_date TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """)
 
     # =====================================================
     # HABIT COMPLETION HISTORY
     # =====================================================
 
-    conn.execute("""
-    CREATE TABLE IF NOT EXISTS habit_completions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        habit_id INTEGER NOT NULL,
-        user_id INTEGER NOT NULL,
-        completed_date TEXT NOT NULL,
-        FOREIGN KEY (habit_id) REFERENCES habits(id),
-        FOREIGN KEY (user_id) REFERENCES users(id)
-    )
-""")
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS habit_completions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            habit_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            completed_date TEXT NOT NULL,
+            FOREIGN KEY (habit_id) REFERENCES habits(id),
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """)
 
     # =====================================================
     # TIMETABLE
     # =====================================================
 
-    conn.execute("""
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS classes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -217,7 +135,7 @@ def init_db():
     # MEDICINES
     # =====================================================
 
-    conn.execute("""
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS medicines (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -233,7 +151,7 @@ def init_db():
     # SKILLS
     # =====================================================
 
-    conn.execute("""
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS skills (
             user_id INTEGER PRIMARY KEY,
             can_teach TEXT DEFAULT '',
@@ -246,7 +164,7 @@ def init_db():
     # MOODS
     # =====================================================
 
-    conn.execute("""
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS moods (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -259,6 +177,10 @@ def init_db():
 
     conn.commit()
     conn.close()
+
+
+# Initialize database when the application starts
+init_db()
 
 
 # =========================================================
