@@ -174,6 +174,21 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     """)
+        # =====================================================
+    # REVEALING BATTLE — COMMUNITY POSTS
+    # =====================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS community_posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            category TEXT NOT NULL DEFAULT 'Study Goals',
+            content TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """)
 
     conn.commit()
     conn.close()
@@ -1739,6 +1754,74 @@ def petbot_chat():
         "pet_name": pet_name,
         "pet_type": pet_type
     }
+    # =========================================================
+# REVEALING BATTLE — COMMUNITY POSTS
+# =========================================================
+
+@app.route("/revealing-battle", methods=["GET", "POST"])
+def revealing_battle():
+
+    user = current_user()
+
+    if not user:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+
+    if request.method == "POST":
+
+        title = request.form.get("title", "").strip()
+        category = request.form.get("category", "Study Goals").strip()
+        content = request.form.get("content", "").strip()
+
+        allowed_categories = [
+            "Study Goals",
+            "Achievements",
+            "Challenges",
+            "Motivation"
+        ]
+
+        if category not in allowed_categories:
+            category = "Study Goals"
+
+        if title and content and len(title) <= 100 and len(content) <= 1000:
+
+            conn.execute(
+                """
+                INSERT INTO community_posts
+                (user_id, title, category, content, created_at)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (
+                    user["id"],
+                    title,
+                    category,
+                    content,
+                    date.today().isoformat()
+                )
+            )
+
+            conn.commit()
+            conn.close()
+
+            return redirect(url_for("revealing_battle"))
+
+    posts = conn.execute(
+        """
+        SELECT community_posts.*, users.username
+        FROM community_posts
+        JOIN users ON users.id = community_posts.user_id
+        ORDER BY community_posts.id DESC
+        """
+    ).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "revealing_battle.html",
+        user=user,
+        posts=posts
+    )
 
 # =========================================================
 # RUN APPLICATION
