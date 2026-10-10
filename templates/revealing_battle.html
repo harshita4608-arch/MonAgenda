@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Revealing Battle | MonAgenda</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .battle-page {
+            max-width: 850px;
+            margin: auto;
+            padding: 24px 18px 100px;
+        }
+
+        .battle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .battle-header h1 {
+            margin-bottom: 6px;
+        }
+
+        .battle-header p {
+            opacity: .75;
+        }
+
+        .battle-button {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            background: #8054c7;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .battle-card {
+            border-radius: 20px;
+            padding: 22px;
+            margin: 18px 0;
+            background: var(--card-bg, #ffffff);
+            box-shadow: 0 5px 22px rgba(70, 50, 100, .09);
+        }
+
+        .battle-card h2 {
+            margin-top: 0;
+        }
+
+        .battle-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .battle-form input,
+        .battle-form textarea,
+        .battle-form select {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 13px;
+            border-radius: 10px;
+            border: 1px solid #ded6e9;
+            font: inherit;
+        }
+
+        .battle-form textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .battle-post {
+            border-radius: 18px;
+            padding: 20px;
+            margin: 16px 0;
+            background: var(--card-bg, #ffffff);
+            box-shadow: 0 4px 18px rgba(70, 50, 100, .07);
+            overflow-wrap: anywhere;
+        }
+
+        .battle-post h3 {
+            margin: 12px 0 8px;
+        }
+
+        .battle-meta {
+            font-size: 13px;
+            opacity: .7;
+        }
+
+        .battle-category {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #eee5ff;
+            color: #6841a6;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .battle-hidden {
+            display: none;
+        }
+
+        .battle-back {
+            display: inline-block;
+            margin-bottom: 22px;
+            text-decoration: none;
+        }
+
+        .battle-empty {
+            text-align: center;
+            padding: 25px 10px;
+            opacity: .8;
+        }
+
+        @media (max-width: 480px) {
+            .battle-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .battle-card,
+            .battle-post {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body class="lifesync-dashboard">
+
+<main class="battle-page">
+
+    <a class="battle-back"
+       href="{{ url_for('dashboard') }}">
+        ← Back to MonAgenda
+    </a>
+
+    <header class="battle-header">
+        <div>
+            <h1>⚔️ Revealing Battle</h1>
+            <p>Share your journey. Celebrate every little win. ✨</p>
+        </div>
+
+        <button class="battle-button"
+                type="button"
+                onclick="togglePostForm()">
+            + Create Post
+        </button>
+    </header>
+
+    <section class="battle-card battle-hidden"
+             id="postFormSection">
+
+        <h2>🌷 Share your story</h2>
+        <p>Every small step counts. Inspire another student today!</p>
+
+        <form class="battle-form"
+              method="POST"
+              action="{{ url_for('revealing_battle') }}">
+
+            <label for="title">Post title</label>
+            <input id="title"
+                   name="title"
+                   type="text"
+                   maxlength="100"
+                   placeholder="e.g. My Python study challenge"
+                   required>
+
+            <label for="category">Choose a category</label>
+            <select id="category" name="category">
+                <option>Study Goals</option>
+                <option>Achievements</option>
+                <option>Challenges</option>
+                <option>Motivation</option>
+            </select>
+
+            <label for="content">Your post</label>
+            <textarea id="content"
+                      name="content"
+                      maxlength="1000"
+                      placeholder="What are you working on today?"
+                      required></textarea>
+
+            <button class="battle-button" type="submit">
+                Share with Community ✨
+            </button>
+
+            <button class="battle-button"
+                    type="button"
+                    onclick="togglePostForm()"
+                    style="background:#8b8495">
+                Cancel
+            </button>
+
+        </form>
+    </section>
+
+    <section class="battle-card">
+        <h2>🌟 Welcome, {{ user["username"] }}!</h2>
+        <p>
+            Your progress doesn't have to be perfect.
+            Just keep showing up, learning, and growing.
+        </p>
+    </section>
+
+    <section>
+        <h2>💜 Community Feed</h2>
+        <p>Little victories deserve to be celebrated.</p>
+
+        {% if posts %}
+
+            {% for post in posts %}
+            <article class="battle-post">
+
+                <span class="battle-category">
+                    {{ post["category"] }}
+                </span>
+
+                <h3>{{ post["title"] }}</h3>
+
+                <p>{{ post["content"] }}</p>
+
+                <div class="battle-meta">
+                    By {{ post["username"] }}
+                    · {{ post["created_at"] }}
+                </div>
+
+            </article>
+            {% endfor %}
+
+        {% else %}
+
+            <article class="battle-post">
+                <span class="battle-category">Study Goals</span>
+                <h3>📚 One chapter at a time</h3>
+                <p>
+                    Today's goal: revise one topic and solve
+                    five practice questions. Small steps matter!
+                </p>
+                <div class="battle-meta">Demo community post</div>
+            </article>
+
+            <article class="battle-post">
+                <span class="battle-category">Achievements</span>
+                <h3>🌱 Showing up for myself</h3>
+                <p>
+                    I completed my study session today.
+                    Progress is progress, no matter how small.
+                </p>
+                <div class="battle-meta">Demo community post</div>
+            </article>
+
+            <article class="battle-post">
+                <span class="battle-category">Challenges</span>
+                <h3>⏳ The 25-minute focus challenge</h3>
+                <p>
+                    Put distractions away and focus on one task
+                    for 25 minutes. Who is trying it today?
+                </p>
+                <div class="battle-meta">Demo community post</div>
+            </article>
+
+        {% endif %}
+    </section>
+
+    <footer style="text-align:center; margin-top:35px; opacity:.7">
+        Made with 💜 on MonAgenda
+    </footer>
+
+</main>
+
+<nav class="ls-bottom-nav">
+
+    <a href="{{ url_for('dashboard') }}" class="ls-nav-item">
+        <span>⌂</span>
+        <small>Home</small>
+    </a>
+
+    <a href="{{ url_for('habits') }}" class="ls-nav-item">
+        <span>✓</span>
+        <small>Habits</small>
+    </a>
+
+    <a href="{{ url_for('timetable') }}" class="ls-nav-item">
+        <span>◈</span>
+        <small>Planner</small>
+    </a>
+
+    <a href="{{ url_for('mood') }}" class="ls-nav-item">
+        <span>♡</span>
+        <small>Mood</small>
+    </a>
+
+    <a href="{{ url_for('revealing_battle') }}"
+       class="ls-nav-item active">
+        <span>⚔️</span>
+        <small>Battle</small>
+    </a>
+
+</nav>
+
+<script>
+    function togglePostForm() {
+        const form = document.getElementById("postFormSection");
+        form.classList.toggle("battle-hidden");
+
+        if (!form.classList.contains("battle-hidden")) {
+            document.getElementById("title").focus();
+        }
+    }
+</script>
+
+</body>
+</html>
